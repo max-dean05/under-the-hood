@@ -35,11 +35,11 @@ function generateSteps({ arr, target }) {
             explain,
             array: arr,
             pointers: mid === null ? { low, hi } : { low, mid, hi },
-            highlights: highlightsFor(target, low, mid, hi, found),
-            vars: { target, low, hi, mid: mid ?? "-", checks },
+            highlights: highlightsFor(arr.length, low, mid, hi, found),
+            vars: { target, low, mid: mid ?? "-", hi, checks },
         })
 
-    snap(1, 'The search begins with the entire array. The low pointer is ' + 
+    snap([1, 2], 'The search begins with the entire array. The low pointer is ' + 
         'at index 0 and the high pointer is at the last index. This only works if the array is sorted in ascending order.');
     
     
