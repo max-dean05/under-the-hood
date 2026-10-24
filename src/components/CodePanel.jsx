@@ -1,8 +1,8 @@
-export default function CodePanel({ code, activeLine }) {
+export default function CodePanel({ code, activeLines }) {
     return (
         <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm overflow-x-auto">
             {code.map((text, i) => {
-                const isActive = i === activeLine;
+                const isActive = activeLines.includes(i);
 
                 return (
                     <div

@@ -39,7 +39,7 @@ function App() {
           {/* Grid of code/explanation/variables */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left side: Code panel */}
-            <CodePanel code={binarySearch.code} activeLine={step.line} />
+            <CodePanel code={binarySearch.code} activeLines={step.lines} />
 
             {/* Right side: Explanation on top, variables below it */}
             <div className="flex flex-col gap-6">

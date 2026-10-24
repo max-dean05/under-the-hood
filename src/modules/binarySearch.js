@@ -1,3 +1,5 @@
+import { createRecorder } from "../engine/createRecorder.js";
+
 const code = [
     "def binary_search(arr, target):",  // 0
     "    low = 0",                      // 1
@@ -23,20 +25,19 @@ function highlightsFor(n, lo, mid, hi, found) {
 }
 
 function generateSteps({ arr, target }) {
-    const steps = [];
+    const rec = createRecorder();
     let low = 0, hi = arr.length - 1, mid = null, checks = 0;
 
     // save a snapshot of the current state
-    const snap = (line, explain, found = false) => {
-        steps.push({
+    const snap = (line, explain, found = false) => 
+        rec.snap({
             line,
-            array: [...arr],
-            pointers: mid === null ? { low, hi } : { low, mid, hi },
-            highlights: highlightsFor(arr.length, low, mid, hi, found),
             explain,
+            array: arr,
+            pointers: mid === null ? { low, hi } : { low, mid, hi },
+            highlights: highlightsFor(target, low, mid, hi, found),
             vars: { target, low, hi, mid: mid ?? "-", checks },
-        });
-    };
+        })
 
     snap(1, 'The search begins with the entire array. The low pointer is ' + 
         'at index 0 and the high pointer is at the last index. This only works if the array is sorted in ascending order.');
@@ -51,7 +52,7 @@ function generateSteps({ arr, target }) {
         if (arr[mid] === target) {
             snap(5, `Found the target at index ${mid}!`, true);
             snap(6, `Return our current index (${mid}).`, true)
-            return steps;
+            return rec.steps;
         } else if (arr[mid] < target) {
             snap(7, `The value at index ${mid} is less than the target.`);
             low = mid + 1;
@@ -66,7 +67,7 @@ function generateSteps({ arr, target }) {
 
     }
     snap(11, 'The target is not in the array.');
-    return steps;
+    return rec.steps;
 }
 
 export const binarySearch = {

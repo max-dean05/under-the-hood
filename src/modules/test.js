@@ -15,6 +15,9 @@ const cases = [
   { name: "even length",       arr: [2, 4, 6, 8, 10, 12], target: 10 },
 ];
 
+const FOUND_LINE = 5;      // "return mid"
+const NOT_FOUND_LINE = 10; // "return -1"
+
 let passed = 0;
 let failed = 0;
 
@@ -26,10 +29,17 @@ for (const { name, arr, target } of cases) {
 
   // 1. Every step is well-formed
   steps.forEach((s, i) => {
-    if (!Number.isInteger(s.line) || s.line < 0 || s.line >= binarySearch.code.length)
-      errors.push(`step ${i}: line ${s.line} is not a valid code line`);
+    if (!Array.isArray(s.lines) || s.lines.length === 0)
+      errors.push(`step ${i}: lines is missing or empty`);
+    else
+      s.lines.forEach((ln) => {
+        if (!Number.isInteger(ln) || ln < 0 || ln >= binarySearch.code.length)
+          errors.push(`step ${i}: line ${ln} is not a valid code line`);
+      });
+
     if (JSON.stringify(s.array) !== JSON.stringify(arr))
       errors.push(`step ${i}: array changed`);
+
     if (typeof s.explain !== "string" || s.explain.length === 0)
       errors.push(`step ${i}: missing explanation`);
   });
@@ -37,11 +47,15 @@ for (const { name, arr, target } of cases) {
   // 2. Ends in the right place
   if (shouldFind) {
     const idx = last.pointers.mid;
-    if (last.line !== 5) errors.push(`expected to end on line 5 (return mid), ended on ${last.line}`);
-    if (arr[idx] !== target) errors.push(`final mid=${idx} points to ${arr[idx]}, not ${target}`);
-    if (last.highlights[idx] !== "found") errors.push(`index ${idx} not highlighted as "found"`);
+    if (!last.lines.includes(FOUND_LINE))
+      errors.push(`expected to end on line ${FOUND_LINE} (return mid), ended on ${last.lines}`);
+    if (arr[idx] !== target)
+      errors.push(`final mid=${idx} points to ${arr[idx]}, not ${target}`);
+    if (last.highlights[idx] !== "found")
+      errors.push(`index ${idx} not highlighted as "found"`);
   } else {
-    if (last.line !== 11) errors.push(`expected to end on line 11 (return -1), ended on ${last.line}`);
+    if (!last.lines.includes(NOT_FOUND_LINE))
+      errors.push(`expected to end on line ${NOT_FOUND_LINE} (return -1), ended on ${last.lines}`);
   }
 
   // 3. It's actually binary search: at most floor(log2(n)) + 1 checks
@@ -61,7 +75,9 @@ for (const { name, arr, target } of cases) {
 
   if (VERBOSE) {
     steps.forEach((s, i) =>
-      console.log(`     ${String(i).padStart(2)} | line ${String(s.line).padStart(2)} | ${JSON.stringify(s.pointers)} | ${s.explain}`)
+      console.log(
+        `     ${String(i).padStart(2)} | lines ${s.lines.join(",").padEnd(5)} | ${JSON.stringify(s.pointers)} | ${s.explain}`
+      )
     );
     console.log();
   }
