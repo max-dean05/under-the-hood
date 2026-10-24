@@ -3,7 +3,7 @@ const code = [
     "    low = 0",                      // 1
     "    high = len(arr) - 1",          // 2
     "    while low <= high:",           // 3
-    "        mid = (low + high) // 2",  // 4
+    "        mid = (low + high)",       // 4
     "        if arr[mid] == target:",   // 5
     "            return mid",           // 6
     "        elif arr[mid] < target:",  // 7
@@ -49,7 +49,8 @@ function generateSteps({ arr, target }) {
         checks++;
         snap(4, `Look at the middle of the range: index = ${mid}, value is ${arr[mid]}.`);
         if (arr[mid] === target) {
-            snap(5, `Found the target at index ${mid}.`, true);
+            snap(5, `Found the target at index ${mid}!`, true);
+            snap(6, `Return our current index (${mid}).`, true)
             return steps;
         } else if (arr[mid] < target) {
             snap(7, `The value at index ${mid} is less than the target.`);
@@ -73,6 +74,8 @@ export const binarySearch = {
     title: "Binary Search",
     problem: "LeetCode 704",
     code,
-    defaultInput: { arr: [1, 2, 3, 4, 5, 6, 7, 8, 9], target: 5 },
+    defaultInput: { arr: [1, 2, 3, 4, 5, 6, 7, 8, 9], target: 3 },
     generateSteps,
+    time: "O(log(n))",
+    space: "O(1)",
 };
