@@ -80,7 +80,7 @@ function App() {
 
             {/* Right side: Explanation on top, variables below it */}
             <div className="flex flex-col gap-6">
-              <div className="bg-slate-900 border border-slate-800 rounded-lg p-5">
+              <div className="bg-slate-900 border border-slate-800 rounded-lg p-5 min-h-61">
                 <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
                   What's happening
                 </h2>
@@ -95,7 +95,7 @@ function App() {
           </div>
 
           {/* Buttons to go through explanation */}
-          <div className="flex items-center justify-center gap-4 bg-slate-900 border border-slate-800 rounded-xl py-4">
+          <div className="sticky bottom-4 z-10 flex items-center justify-center gap-4 bg-slate-900/95 backdrop-blur border border-slate-800 rounded-xl py-4 shadow-lg shadow-black/40">
             <button 
               onClick={() => setStepIndex(0)}
               disabled={isFirstStep}
