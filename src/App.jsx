@@ -210,25 +210,13 @@ function App() {
                   )}
                 </section>
 
-                {/* Grid of code/explanation/variables */}
+                {/* Code/Variables side-by-side */}
                 <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] gap-6">
                   {/* Left side: Code panel */}
                   <CodePanel code={mod.code} activeLines={step.lines} />
 
                   {/* Right side: Explanation on top, variables below it */}
                   <div className="flex flex-col gap-6">
-                    <div className="bg-slate-900 border border-slate-800 rounded-lg p-5 min-h-78">
-                      <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-                        What's happening
-                      </h2>
-                      <p
-                        key={`${moduleId}-${stepIndex}`}
-                        className="fade-in text-lg leading-relaxed"
-                      >
-                        {step.explain}
-                      </p>
-                    </div>
-
                     <VarsPanel
                       vars={step.vars}
                       prevVars={
@@ -236,6 +224,19 @@ function App() {
                       }
                     />
                   </div>
+                </div>
+
+                {/* Explanation of code. */}
+                <div className="bg-slate-900 border border-slate-800 rounded-lg p-5 min-h-40">
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                    What's happening
+                  </h2>
+                  <p
+                    key={`${moduleId}-${stepIndex}`}
+                    className="fade-in text-lg leading-relaxed"
+                  >
+                    {step.explain}
+                  </p>
                 </div>
 
                 {/* Navigation controls */}
