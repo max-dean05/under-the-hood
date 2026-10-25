@@ -161,7 +161,7 @@ function App() {
           </div>
 
           {/* Navigation controls */}
-          <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-center gap-4 bg-slate-900/95 backdrop-blur border border-slate-800 rounded-xl py-4 shadow-lg shadow-black/40">
+          <div className="flex flex-wrap items-center justify-center gap-4 bg-slate-900 border border-slate-800 rounded-xl py-4">
             <button
               onClick={() => goTo(0)}
               disabled={isFirstStep}
