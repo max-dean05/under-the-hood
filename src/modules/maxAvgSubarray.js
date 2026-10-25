@@ -180,9 +180,9 @@ function generateSteps({ arr, k }) {
     return rec.steps;
 }
 
-export const slidingWindow = {
-    id: "sliding-window",
-    title: "Sliding Window",
+export const maxAvgSubarray = {
+    id: "max-avg-subarray",
+    title: "Maximum Average Subarray",
     problem: "LeetCode 643",
     code,
     defaultInput: { arr: [2, 1, 5, 1, 3, 2, 6, 1, 4], k: 3 },
