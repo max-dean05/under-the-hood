@@ -86,16 +86,16 @@ function App() {
   return (
     <>
       <div className="min-h-screen bg-slate-950 text-slate-100">
-        <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col gap-6">
+        <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col gap-6">
           {/* Page Header */}
-          <div className="flex flex-col gap-2 pb-2 border-b border-slate-800">
-            <div className="flex items-center gap-3">
-              <img src="/favicon.svg" alt="" className="w-8 h-8" />
+          <div className="flex flex-col gap-3 pb-6 border-b border-slate-800">
+            <div className="flex items-center gap-4">
+              <img src="/favicon.svg" alt="" className="w-12 h-12" />
               <h1 className="text-2xl font-bold tracking-tight">
                 Under the Hood
               </h1>
             </div>
-            <p className="text-slate-400 max-w-2xl">
+            <p className="text-lg text-slate-400 max-w-2xl">
               You've memorized the LeetCode solution. Now see{" "}
               <span className="text-slate-100 font-medium">why</span> it works,
               one step at a time.
@@ -116,148 +116,161 @@ function App() {
             </p>
           </div>
 
-          {/* Module tabs */}
-          <nav className="flex flex-wrap gap-2">
-            {modules.map((m) => (
-              <button
-                key={m.id}
-                onClick={() => switchModule(m.id)}
-                className={`px-4 py-2 rounded-full text-sm border transition-colors ${
-                  m.id === moduleId
-                    ? "bg-sky-600 border-sky-500 text-white"
-                    : "bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800"
-                }`}
-              >
-                {m.title}
-              </button>
-            ))}
-          </nav>
+          {/* Sidebar + main content are split */}
+          <div className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)] gap-8 items-start">
+            {/* Sidebar: module tabs */}
+            <aside className="lg:sticky lg:top-6">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">
+                Problems
+              </h2>
+              <nav className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+                {modules.map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => switchModule(m.id)}
+                    className={`shrink-0 text-left px-4 py-3 rounded-lg border transition-colors ${
+                      m.id === moduleId
+                        ? "bg-sky-500/15 border-sky-500 text-white"
+                        : "border-transparent text-slate-400 hover:bg-slate-900 hover:text-slate-200"
+                    }`}
+                  >
+                    <span className="block font-medium">{m.title}</span>
+                    <span className="block text-xs text-slate-500">
+                      {m.problem}
+                    </span>
+                  </button>
+                ))}
+              </nav>
+            </aside>
 
-          {/* Header */}
-          <header className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-wider text-slate-400">
-                {mod.problem}
-              </p>
-              <h1 className="text-3xl font-bold">{mod.title}</h1>
-            </div>
-            <div className="flex gap-2 font-mono text-sm">
-              <span className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700">
-                Time {mod.time}
-              </span>
-              <span className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700">
-                Space {mod.space}
-              </span>
-            </div>
-          </header>
+            {/* Main content */}
+            <main className="flex flex-col gap-6 min-w-0">
+              {/* Header */}
+              <header className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <p className="text-xs uppercase tracking-wider text-slate-400">
+                    {mod.problem}
+                  </p>
+                  <h1 className="text-3xl font-bold">{mod.title}</h1>
+                </div>
+                <div className="flex gap-2 font-mono text-sm">
+                  <span className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700">
+                    Time {mod.time}
+                  </span>
+                  <span className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700">
+                    Space {mod.space}
+                  </span>
+                </div>
+              </header>
 
-          {/* Problem description */}
-          {mod.idea && (
-            <div className="flex gap-3 items-start bg-sky-500/10 border border-sky-500/30 rounded-xl px-5 py-4">
-              <span className="text-xs font-semibold uppercase tracking-wider text-sky-300 shrink-0 pt-0.5">
-                The idea
-              </span>
-              <p className="text-slate-200 leading-relaxed">{mod.idea}</p>
-            </div>
-          )}
+              {/* Problem description */}
+              {mod.idea && (
+                <div className="flex gap-3 items-start bg-sky-500/10 border border-sky-500/30 rounded-xl px-5 py-4">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-sky-300 shrink-0 pt-0.5">
+                    The idea
+                  </span>
+                  <p className="text-slate-200 leading-relaxed">{mod.idea}</p>
+                </div>
+              )}
 
-          {/* Custom input field */}
-          <InputEditor mod={mod} input={input} onApply={applyInput} />
+              {/* Custom input field */}
+              <InputEditor mod={mod} input={input} onApply={applyInput} />
 
-          {/* Visualization */}
-          <section className="bg-slate-900 border border-slate-800 rounded-xl px-6 pt-10 pb-6 flex flex-col items-center overflow-x-auto">
-            {step.array && <ArrayView step={step} />}
+              {/* Visualization */}
+              <section className="bg-slate-900 border border-slate-800 rounded-xl px-6 pt-10 pb-6 flex flex-col items-center overflow-x-auto">
+                {step.array && <ArrayView step={step} />}
+                {step.map && (
+                  <HashMapView
+                    map={step.map}
+                    highlights={step.mapHighlights}
+                    prevMap={stepIndex > 0 ? steps[stepIndex - 1].map : null}
+                    label={mod.mapLabel}
+                  />
+                )}
+              </section>
 
-            {step.map && (
-              <HashMapView
-                map={step.map}
-                highlights={step.mapHighlights}
-                prevMap={stepIndex > 0 ? steps[stepIndex - 1].map : null}
-                label={mod.mapLabel}
-              />
-            )}
-          </section>
+              {/* Grid of code/explanation/variables */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left side: Code panel */}
+                <CodePanel code={mod.code} activeLines={step.lines} />
 
-          {/* Grid of code/explanation/variables */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Left side: Code panel */}
-            <CodePanel code={mod.code} activeLines={step.lines} />
+                {/* Right side: Explanation on top, variables below it */}
+                <div className="flex flex-col gap-6">
+                  <div className="bg-slate-900 border border-slate-800 rounded-lg p-5 min-h-70">
+                    <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                      What's happening
+                    </h2>
+                    <p className="text-lg leading-relaxed">{step.explain}</p>
+                  </div>
 
-            {/* Right side: Explanation on top, variables below it */}
-            <div className="flex flex-col gap-6">
-              <div className="bg-slate-900 border border-slate-800 rounded-lg p-5 min-h-61">
-                <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-                  What's happening
-                </h2>
-                <p className="text-lg leading-relaxed">{step.explain}</p>
+                  <VarsPanel
+                    vars={step.vars}
+                    prevVars={stepIndex > 0 ? steps[stepIndex - 1].vars : null}
+                  />
+                </div>
               </div>
 
-              <VarsPanel
-                vars={step.vars}
-                prevVars={stepIndex > 0 ? steps[stepIndex - 1].vars : null}
-              />
-            </div>
-          </div>
-
-          {/* Navigation controls */}
-          <div className="flex flex-wrap items-center justify-center gap-4 bg-slate-900 border border-slate-800 rounded-xl py-4">
-            <button
-              onClick={() => goTo(0)}
-              disabled={isFirstStep}
-              className="px-3 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
-            >
-              Reset
-            </button>
-            <button
-              onClick={() => goTo(stepIndex - 1)}
-              disabled={isFirstStep}
-              className="px-4 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
-            >
-              Previous
-            </button>
-
-            <button
-              onClick={togglePlay}
-              className="w-24 px-4 py-2 rounded bg-sky-600 hover:bg-sky-500 font-semibold"
-            >
-              {isPlaying ? "Pause" : isLastStep ? "Replay" : "Play"}
-            </button>
-
-            <button
-              onClick={() => goTo(stepIndex + 1)}
-              disabled={isLastStep}
-              className="px-4 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
-            >
-              Next
-            </button>
-            <button
-              onClick={() => goTo(steps.length - 1)}
-              disabled={isLastStep}
-              className="px-3 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
-            >
-              Last
-            </button>
-
-            <span className="font-mono text-sm text-slate-400 w-20 text-center">
-              {stepIndex + 1} / {steps.length}
-            </span>
-
-            {/* Speed */}
-            <div className="flex rounded-lg overflow-hidden border border-slate-700">
-              {SPEEDS.map((s) => (
+              {/* Navigation controls */}
+              <div className="flex flex-wrap items-center justify-center gap-4 bg-slate-900 border border-slate-800 rounded-xl py-4">
                 <button
-                  key={s.ms}
-                  onClick={() => setSpeed(s.ms)}
-                  className={`px-2 py-1 text-xs font-mono ${
-                    speed === s.ms
-                      ? "bg-slate-600 text-white"
-                      : "bg-slate-800 text-slate-400 hover:bg-slate-700"
-                  }`}
+                  onClick={() => goTo(0)}
+                  disabled={isFirstStep}
+                  className="px-3 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
                 >
-                  {s.label}
+                  Reset
                 </button>
-              ))}
-            </div>
+                <button
+                  onClick={() => goTo(stepIndex - 1)}
+                  disabled={isFirstStep}
+                  className="px-4 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
+                >
+                  Previous
+                </button>
+
+                <button
+                  onClick={togglePlay}
+                  className="w-24 px-4 py-2 rounded bg-sky-600 hover:bg-sky-500 font-semibold"
+                >
+                  {isPlaying ? "Pause" : isLastStep ? "Replay" : "Play"}
+                </button>
+
+                <button
+                  onClick={() => goTo(stepIndex + 1)}
+                  disabled={isLastStep}
+                  className="px-4 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
+                >
+                  Next
+                </button>
+                <button
+                  onClick={() => goTo(steps.length - 1)}
+                  disabled={isLastStep}
+                  className="px-3 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
+                >
+                  Last
+                </button>
+
+                <span className="font-mono text-sm text-slate-400 w-20 text-center">
+                  {stepIndex + 1} / {steps.length}
+                </span>
+
+                {/* Speed */}
+                <div className="flex rounded-lg overflow-hidden border border-slate-700">
+                  {SPEEDS.map((s) => (
+                    <button
+                      key={s.ms}
+                      onClick={() => setSpeed(s.ms)}
+                      className={`px-2 py-1 text-xs font-mono ${
+                        speed === s.ms
+                          ? "bg-slate-600 text-white"
+                          : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </main>
           </div>
         </div>
       </div>
