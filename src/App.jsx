@@ -174,7 +174,9 @@ function App() {
               )}
 
               {/* Custom input field */}
-              <InputEditor mod={mod} input={input} onApply={applyInput} />
+              <div className="min-h-31">
+                <InputEditor mod={mod} input={input} onApply={applyInput}/>
+              </div>
 
               {/* Visualization */}
               <section className="bg-slate-900 border border-slate-800 rounded-xl px-6 pt-10 pb-2 flex flex-col items-center overflow-x-auto">
