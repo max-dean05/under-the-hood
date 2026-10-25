@@ -1,16 +1,22 @@
-import { useState, useMemo } from 'react'
-import { modules } from './modules/registry.js'
-import ArrayView from './components/ArrayView.jsx'
-import CodePanel from './components/CodePanel.jsx'
-import VarsPanel from './components/VarsPanel.jsx'
-import HashMapView from './components/HashMapView.jsx'
+import { useState, useMemo, useEffect } from "react";
+import { modules } from "./modules/registry.js";
+import ArrayView from "./components/ArrayView.jsx";
+import CodePanel from "./components/CodePanel.jsx";
+import VarsPanel from "./components/VarsPanel.jsx";
+import HashMapView from "./components/HashMapView.jsx";
 
-// Default input for now, will go inside the function once user can change input. 
-
+const SPEEDS = [
+  { label: "0.5x", ms: 2000 },
+  { label: "1x", ms: 1200 },
+  { label: "2x", ms: 600 },
+  { label: "4x", ms: 300 },
+];
 
 function App() {
   const [moduleId, setModuleId] = useState(modules[0].id);
   const [stepIndex, setStepIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [speed, setSpeed] = useState(1200);
 
   const mod = modules.find((m) => m.id === moduleId);
 
@@ -20,16 +26,57 @@ function App() {
   const isFirstStep = stepIndex === 0;
   const isLastStep = stepIndex === steps.length - 1;
 
+  // Auto play
+  useEffect(() => {
+    if (!isPlaying) return;
+    if (isLastStep) {
+      setIsPlaying(false);
+      return;
+    }
+    const timer = setTimeout(() => setStepIndex((s) => s + 1), speed);
+    return () => clearTimeout(timer);
+  }, [isPlaying, stepIndex, speed, isLastStep]);
+
+  // keyboard shortcuts
+  useEffect(() => {
+    function onKey(e) {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")
+        return;
+      if (e.key === "ArrowRight") {
+        setIsPlaying(false);
+        setStepIndex((s) => Math.min(s + 1, steps.length - 1));
+      } else if (e.key === "ArrowLeft") {
+        setIsPlaying(false);
+        setStepIndex((s) => Math.max(s - 1, 0));
+      } else if (e.key === " ") {
+        e.preventDefault();
+        togglePlay();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
   function switchModule(id) {
+    setIsPlaying(false);
     setModuleId(id);
     setStepIndex(0);
+  }
+
+  function togglePlay() {
+    if (isLastStep) setStepIndex(0);
+    setIsPlaying((p) => !p);
+  }
+
+  function goTo(index) {
+    setIsPlaying(false);
+    setStepIndex(index);
   }
 
   return (
     <>
       <div className="min-h-screen bg-slate-950 text-slate-100">
         <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col gap-6">
-
           {/* Module tabs */}
           <nav className="flex flex-wrap gap-2">
             {modules.map((m) => (
@@ -41,21 +88,27 @@ function App() {
                     ? "bg-sky-600 border-sky-500 text-white"
                     : "bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800"
                 }`}
-                >
-                  {m.title}
-                </button>
+              >
+                {m.title}
+              </button>
             ))}
           </nav>
 
           {/* Header */}
           <header className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="text-xs uppercase tracking-wider text-slate-400">{mod.problem}</p>
+              <p className="text-xs uppercase tracking-wider text-slate-400">
+                {mod.problem}
+              </p>
               <h1 className="text-3xl font-bold">{mod.title}</h1>
             </div>
             <div className="flex gap-2 font-mono text-sm">
-              <span className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700">Time {mod.time}</span>
-              <span className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700">Space {mod.space}</span>
+              <span className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700">
+                Time {mod.time}
+              </span>
+              <span className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700">
+                Space {mod.space}
+              </span>
             </div>
           </header>
 
@@ -64,10 +117,10 @@ function App() {
             {step.array && <ArrayView step={step} />}
 
             {step.map && (
-              <HashMapView 
+              <HashMapView
                 map={step.map}
                 highlights={step.mapHighlights}
-                prevMap={stepIndex > 0 ? steps[stepIndex-1].map : null}
+                prevMap={stepIndex > 0 ? steps[stepIndex - 1].map : null}
                 label={mod.mapLabel}
               />
             )}
@@ -89,50 +142,75 @@ function App() {
 
               <VarsPanel
                 vars={step.vars}
-                prevVars={stepIndex > 0 ? steps[stepIndex-1].vars : null}
+                prevVars={stepIndex > 0 ? steps[stepIndex - 1].vars : null}
               />
             </div>
           </div>
 
-          {/* Buttons to go through explanation */}
-          <div className="sticky bottom-4 z-10 flex items-center justify-center gap-4 bg-slate-900/95 backdrop-blur border border-slate-800 rounded-xl py-4 shadow-lg shadow-black/40">
-            <button 
-              onClick={() => setStepIndex(0)}
+          {/* Navigation controls */}
+          <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-center gap-4 bg-slate-900/95 backdrop-blur border border-slate-800 rounded-xl py-4 shadow-lg shadow-black/40">
+            <button
+              onClick={() => goTo(0)}
               disabled={isFirstStep}
               className="px-3 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
             >
               Reset
             </button>
-            <button 
-              onClick={() => setStepIndex(stepIndex-1)}
+            <button
+              onClick={() => goTo(stepIndex - 1)}
               disabled={isFirstStep}
               className="px-4 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
             >
               Previous
             </button>
-            {/* Step counter */}
-            <span className="font-mono text-sm text-slate-400 w-24 text-center">
-              {stepIndex+1} / {steps.length}
-            </span>
-            <button 
-              onClick={() => setStepIndex(stepIndex+1)}
+
+            <button
+              onClick={togglePlay}
+              className="w-24 px-4 py-2 rounded bg-sky-600 hover:bg-sky-500 font-semibold"
+            >
+              {isPlaying ? "Pause" : isLastStep ? "Replay" : "Play"}
+            </button>
+
+            <button
+              onClick={() => goTo(stepIndex + 1)}
               disabled={isLastStep}
-              className="px-4 py-2 rounded bg-sky-600 hover:bg-sky-500 disabled:opacity-40"
+              className="px-4 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
             >
               Next
             </button>
             <button
-              onClick={() => setStepIndex(steps.length-1)}
+              onClick={() => goTo(steps.length - 1)}
               disabled={isLastStep}
-              className="px-4 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
+              className="px-3 py-2 rounded bg-slate-700 hover:bg-slate-600 disabled:opacity-40"
             >
               Last
             </button>
+
+            <span className="font-mono text-sm text-slate-400 w-20 text-center">
+              {stepIndex + 1} / {steps.length}
+            </span>
+
+            {/* Speed */}
+            <div className="flex rounded-lg overflow-hidden border border-slate-700">
+              {SPEEDS.map((s) => (
+                <button
+                  key={s.ms}
+                  onClick={() => setSpeed(s.ms)}
+                  className={`px-2 py-1 text-xs font-mono ${
+                    speed === s.ms
+                      ? "bg-slate-600 text-white"
+                      : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-        </div>
+      </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
