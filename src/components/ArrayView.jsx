@@ -5,6 +5,7 @@ const COLORS = {
     visited:    "bg-sky-500/15 border-sky-700 text-sky-200",
     window:     "bg-violet-500/20 border-violet-400 text-violet-100",
     leaving:    "bg-rose-500/15 border-rose-500 text-rose-200",
+    source: "bg-amber-500/20 border-amber-400 text-amber-100",
 };
 const DEFAULT = "bg-slate-800 border-slate-500 text-slate-100";
 
