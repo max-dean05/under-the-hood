@@ -15,42 +15,26 @@ function formatNum(value) {
     return value < 0 ? `(${value})` : String(value);
 }
 
-function workComparison(n, k) {
-    const windows = n - k + 1;
+function describeAnswer(arr, k, best, bestStart) {
+    const n = arr.length;
+    const average = (best / k).toFixed(2);
+    const where = k === 1
+        ? `index ${bestStart}`
+        : `indexes ${bestStart} to ${bestStart + k - 1}`;
     const slides = n - k;
 
     if (slides === 0) {
         const noun = k === 1 ? "1 number" : `${k} numbers`;
-        return `There is only one place a window of length ${k} can sit, so the loop never slides. Re-summing every window would be this same sum of ${noun}.`;
+        return `The maximum average is ${average} (${formatNum(best)} / ${k}), from the only window. Re-summing is that same sum of ${noun}, since nothing slides.`;
     }
 
     if (k === 1) {
-        return `k is 1, so re-summing every window is already one read per cell, which is O(n): the work grows with the length of the array. The slide formula is also O(n). The savings show up when k is bigger than 1, because re-summing repeats k reads per window, while a slide still touches only the cell that enters and the cell that leaves.`;
+        return `The maximum average is ${average} (${formatNum(best)} / 1) at ${where}. With k = 1, re-summing is already O(n), and each slide is one add and one subtract.`;
     }
 
-    const naiveReads = windows * k;
+    const naiveReads = (slides + 1) * k;
     const slideReads = k + 2 * slides;
-    return `Re-summing every window touches ${k} cells, ${windows} times: ${naiveReads} cell reads. That cost grows with both the array length and the window length (O(n*k)). We read the first window once (${k} cells), then each of the ${slides} slides reads only the entering cell and the leaving cell: ${slideReads} reads in all. Each slide is a fixed amount of work (O(1)), so the whole pass grows with the array length (O(n)).`;
-}
-
-function describeAnswer(arr, k, best, bestStart, windowSum) {
-    const n = arr.length;
-    const average = (best / k).toFixed(2);
-    const cells = arr.slice(bestStart, bestStart + k).join(", ");
-    const span = k === 1
-        ? `index ${bestStart} (value ${cells})`
-        : `indexes ${bestStart} to ${bestStart + k - 1} (values ${cells})`;
-
-    let where;
-    if (bestStart === n - k) {
-        where = `The green cells are that window, ${span}.`;
-    } else if (windowSum === best) {
-        where = `The green cells are the earlier window, ${span}. The last window also sums to ${best}, and we kept the earlier one. window still holds that last sum.`;
-    } else {
-        where = `The green cells are the winning window, ${span}. window holds the last window's sum, ${windowSum}, which did not beat best. The return uses best.`;
-    }
-
-    return `The maximum average is ${average}, because ${formatNum(best)} / ${k} = ${average}. ${where} ${workComparison(n, k)}`;
+    return `The maximum average is ${average} (${formatNum(best)} / ${k}) at ${where}. Sliding uses ${slideReads} reads versus ${naiveReads}, so the work is O(n) instead of O(n*k).`;
 }
 
 function generateSteps({ arr, k }) {
@@ -101,23 +85,27 @@ function generateSteps({ arr, k }) {
     windowSum = 0;
     for (let idx = 0; idx < k; idx++) windowSum += arr[idx];
     const terms = arr.slice(0, k).map(formatNum).join(" + ");
-    const reuse = k === n
-        ? " The window is already the whole array, so this sum is the only candidate and nothing will slide."
-        : k === 1
-            ? " Each later step replaces that cell: add the new one and subtract this one."
-            : " When the window slides, the next total is built from this one, so we never add a whole window again.";
-    snap(
-        1,
-        k === 1
-            ? `k is 1, so the first window is a single cell. start and end both sit on index 0, which holds ${arr[0]}. The window sum is ${windowSum}.${reuse}`
-            : `The first window is the first ${k} cells, indexes 0 to ${end}. start and end mark its edges. Add those cells once: ${terms} = ${windowSum}. This is the only full sum.${reuse}`
-    );
+    let opening;
+    if (k === 1 && k === n) {
+        opening = `k is 1, so the only window is index 0, value ${arr[0]}. Its sum is ${windowSum}, and no next cell can slide in.`;
+    } else if (k === n) {
+        opening = k <= 8
+            ? `Indexes 0 to ${end} add up to ${windowSum} (${terms}). The window is the whole array, so nothing slides.`
+            : `The first window is the whole array, indexes 0 to ${end}, sum ${windowSum}. Nothing slides, because no cell sits past the end.`;
+    } else if (k === 1) {
+        opening = `k is 1, so the first window is just index 0, value ${arr[0]}. Each later step adds the new cell and subtracts this one.`;
+    } else if (k <= 8) {
+        opening = `The first window, indexes 0 to ${end}, sums to ${windowSum} (${terms}). Later slides reuse this total instead of adding every cell.`;
+    } else {
+        opening = `The first window, indexes 0 to ${end}, sums to ${windowSum}. Later slides reuse this total instead of adding every cell.`;
+    }
+    snap(1, opening);
 
     best = windowSum;
     bestStart = 0;
     snap(
         2,
-        `This line copies the window sum into best. best is a sum, not an average. The division waits until the return. This is the only window so far, so best becomes ${windowSum} and bestStart becomes 0, the index where it begins. The Python does not store that index. We keep it so the last step can color the winning cells, and it moves only when a later window is strictly bigger.`
+        `best stores the sum ${windowSum}, and we divide by k only at the return. bestStart starts at 0 and moves only when a later sum is strictly larger.`
     );
 
     if (k < n) {
@@ -126,17 +114,15 @@ function generateSteps({ arr, k }) {
             enter = i;
             const leaving = arr[leave];
             const entering = arr[enter];
-            const stayed = k <= 1
-                ? ""
-                : k === 2
-                    ? "The other cell is in both the old window and the new one, so it is already part of the sum."
-                    : `The other ${k - 1} cells are in both the old window and the new one, so they are already part of the sum.`;
+            const overlap = k === 2
+                ? "The other cell stays"
+                : `The other ${k - 1} cells stay`;
 
             snap(
                 3,
                 k === 1
-                    ? `i moves to ${i}. This line only chooses i, so the sum is still ${windowSum}. k is 1, so the window is a single cell: index ${leave} (value ${leaving}) is about to leave, and index ${enter} (value ${entering}) is about to become the whole window. The sum changes on the next line.`
-                    : `i moves to ${i}. This line only chooses i, so the window still covers indexes ${start} to ${end} and the sum is still ${windowSum}. Index ${leave} (value ${leaving}) is about to leave from the left, and index ${enter} (value ${entering}) is about to enter on the right. ${stayed} The sum changes on the next line.`
+                    ? `i is ${i}, so index ${leave} (value ${leaving}) leaves and index ${enter} (value ${entering}) becomes the window. The sum is still ${windowSum} until the next line.`
+                    : `i is ${i}, so index ${leave} (value ${leaving}) leaves and index ${enter} (value ${entering}) enters. ${overlap}, so the sum is still ${windowSum}.`
             );
 
             const oldSum = windowSum;
@@ -147,25 +133,12 @@ function generateSteps({ arr, k }) {
             enter = null;
 
             const formula = `${formatNum(oldSum)} + ${formatNum(entering)} - ${formatNum(leaving)} = ${windowSum}`;
-            const stayedNote = k === 2
-                ? "The cell that stayed is already counted, so you do not add it again."
-                : "The cells that stayed are already counted, so you do not add them again.";
-            if (k === 1) {
-                snap(
-                    4,
-                    `New sum = old + entering - leaving = ${formula}. The windows share nothing when k is 1, so the sum becomes the new cell. The code still does one addition and one subtraction, a fixed amount of work (O(1)). The window is now index ${start}.`
-                );
-            } else if (i === k) {
-                snap(
-                    4,
-                    `New sum = old + entering - leaving = ${formula}. ${stayedNote} One addition and one subtraction is a fixed amount of work (O(1)), however large k is. Summing this window from scratch would add ${k} numbers again. The window is now indexes ${start} to ${end}.`
-                );
-            } else {
-                snap(
-                    4,
-                    `New sum = old + entering - leaving = ${formula}. Again, one addition and one subtraction instead of adding the ${k} cells in the window again. The window is now indexes ${start} to ${end}.`
-                );
-            }
+            snap(
+                4,
+                k === 1
+                    ? `New sum = ${formula}. With k = 1, that is just the new cell, still one add and one subtract.`
+                    : `New sum = ${formula}. One add and one subtract replaces summing all ${k} cells again.`
+            );
 
             if (windowSum > best) {
                 const previous = best;
@@ -173,17 +146,17 @@ function generateSteps({ arr, k }) {
                 bestStart = start;
                 snap(
                     5,
-                    `${windowSum} is larger than best (${previous}). max picks the new sum, and bestStart moves to ${start}, where this window begins. max replaces best only when the new sum is strictly larger, so a later tie keeps this window.`
+                    `${windowSum} is larger than best (${previous}), so best becomes ${windowSum} and bestStart moves to ${start}. A later tie will keep this window.`
                 );
             } else if (windowSum === best) {
                 snap(
                     5,
-                    `${windowSum} equals best. max keeps the value it already has, so best stays ${best} and bestStart stays ${bestStart}. The earlier window remains the winner.`
+                    `${windowSum} equals best, so max keeps the earlier window. best stays ${best} and bestStart stays ${bestStart}.`
                 );
             } else {
                 snap(
                     5,
-                    `${windowSum} is smaller than best (${best}). max keeps ${best}, and bestStart stays ${bestStart}.`
+                    `${windowSum} is smaller than best (${best}), so this window cannot win. max keeps ${best} and bestStart stays ${bestStart}.`
                 );
             }
         }
@@ -193,7 +166,7 @@ function generateSteps({ arr, k }) {
     } else {
         snap(
             3,
-            `The for-loop would start i at ${k} and stop before len(arr), which is also ${n}. range(${k}, ${n}) is empty, so the body never runs and i stays "-". The window already covers the whole array, so there is no cell on the right to enter and nothing to slide.`
+            `The loop starts i at ${k}, but the array length is also ${n}. That range is empty, so the body never runs and nothing slides.`
         );
     }
 
@@ -202,7 +175,7 @@ function generateSteps({ arr, k }) {
     end = bestStart + k - 1;
     leave = null;
     enter = null;
-    snap(6, describeAnswer(arr, k, best, bestStart, windowSum));
+    snap(6, describeAnswer(arr, k, best, bestStart));
     return rec.steps;
 }
 
