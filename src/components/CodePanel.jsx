@@ -1,28 +1,34 @@
 export default function CodePanel({ code, activeLines }) {
-    return (
-        <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm overflow-x-auto">
-            {code.map((text, i) => {
-                const isActive = activeLines.includes(i);
+  return (
+    <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm overflow-x-auto">
+      <div className="min-w-max p-4 pr-6">
+        {code.map((text, i) => {
+          const isActive = activeLines.includes(i);
 
-                return (
-                    <div
-                        key={i}
-                        className={`flex min-w-max gap-4 px-2 rounded transition-colors duration-200 ${
-                            isActive ? "bg-yellow-400/20" : ""}`}
-                    >
-                        {/* Line number */}
-                        <span className={`w-6 shrink-0 text-right select-none ${isActive ? "text-yellow-300" : "text-slate-500"}`}>
-                            {i + 1}
-                        </span>
+          return (
+            <div
+              key={i}
+              className={`flex min-w-max gap-4 px-2 rounded transition-colors duration-200 ${
+                isActive ? "bg-yellow-400/20" : ""
+              }`}
+            >
+              {/* Line number */}
+              <span
+                className={`w-6 shrink-0 text-right select-none ${isActive ? "text-yellow-300" : "text-slate-500"}`}
+              >
+                {i + 1}
+              </span>
 
-                        {/* Actual code */}
-                        <span className={`whitespace-pre ${isActive ? "text-yellow-100" : "text-slate-300"}`}>
-                            {text}
-                        </span>
-                    </div>
-                );
-            }
-            )}
-        </div>
-    )
+              {/* Actual code */}
+              <span
+                className={`whitespace-pre ${isActive ? "text-yellow-100" : "text-slate-300"}`}
+              >
+                {text}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { toTexts, parseFields } from "../engine/inputs.js";
 
-export default function InputEditor({ mod, input, onApply }) {
+export default function InputEditor({ mod, input, onApply, onErrorChange }) {
     const [texts, setTexts] = useState(() => toTexts(mod.inputFields, input));
     const [error, setError] = useState(null);
 
@@ -10,6 +10,11 @@ export default function InputEditor({ mod, input, onApply }) {
         setTexts(toTexts(mod.inputFields, input));
         setError(null);
     }, [mod, input]);
+
+    // whenever an error appears or the input is cleared, let the app know
+    useEffect(() => {
+        onErrorChange?.(error !== null);
+    }, [error]);
 
     function apply() {
         const parsed = parseFields(mod.inputFields, texts);
@@ -59,7 +64,9 @@ export default function InputEditor({ mod, input, onApply }) {
                 </div>
             </div>
 
-            {error && <p className="text-sm text-rose-400">{error}</p>}
+            {error && <p className="text-sm text-rose-400">
+                {error} <span className="text-slate-500">The visualization below is from your last valid input.</span>
+                </p>}
         </form>
     )
 }
