@@ -59,7 +59,7 @@ function generateSteps({ arr, k }) {
         for (let idx = start; idx <= end; idx++) {
             highlights[idx] = found ? "found" : "visited";
         }
-        if (!found && leave !== null) highlights[leave] = "eliminated";
+        if (!found && leave !== null) highlights[leave] = "leaving";
         if (!found && enter !== null) highlights[enter] = "comparing";
 
         const pointers = { start, end };
