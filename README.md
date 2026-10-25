@@ -1,16 +1,40 @@
-# React + Vite
+# Under the Hood
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**You memorized the solution. Now see why it works.**
 
-Currently, two official plugins are available:
+Under the Hood is an interactive, step-by-step visualizer for common LeetCode problems. Pick a problem, then step through the real algorithm one line at a time: the executing line of Python is highlighted, the array, pointers, and hash map animate, and every step comes with a plain-English explanation of what is happening and why.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Live demo: https://under-the-hood-blue.vercel.app/
 
-## React Compiler
+## Features
+- Plain-English "why this works" summary plus time and space complexity for each problem
+- Line-highlighted Python code synced to each step
+- Live visualization of arrays, labeled pointers, and hash maps
+- Variables panel that highlights what changed
+- Bring your own input (validated) or generate a random one
+- Step forward/back (arrow keys), play/pause (Space), and 0.5x to 4x speed
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Problems
+| Problem | LeetCode # |
+|---|---|
+| Binary Search | 704 |
+| Two Sum | 1 |
+| Two Pointers (sorted pair sum) | 167 |
+| Move Zeroes | 283 |
+| Maximum Average Subarray | 643 |
+| Best Time to Buy and Sell Stock | 121 |
+| Climbing Stairs | 70 |
 
-## Expanding the ESLint configuration
+## How it works
+Each problem is a self-contained module that runs the real algorithm once and records a snapshot at every meaningful step (active code line, explanation, array state, pointers, highlights, hash map, variables). The UI plays those snapshots back, so stepping backward is as easy as stepping forward. Adding a problem means one new module plus one line in the registry.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech
+React 19, Vite, Tailwind CSS 4, deployed on Vercel. Runs entirely in the browser.
+
+## Run locally
+```bash
+npm install
+npm run dev
+```
+
+Built at HackTX 2026.
