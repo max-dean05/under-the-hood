@@ -77,6 +77,6 @@ export const binarySearch = {
     code,
     defaultInput: { arr: [1, 2, 3, 4, 5, 6, 7, 8, 9], target: 3 },
     generateSteps,
-    time: "O(log(n))",
+    time: "O(log(N))",
     space: "O(1)",
 };

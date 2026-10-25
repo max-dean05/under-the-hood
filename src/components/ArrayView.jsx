@@ -2,6 +2,7 @@ const COLORS = {
     comparing:  "bg-yellow-400/20 border-yellow-400 text-yellow-100",
     found:      "bg-green-500/25 border-green-400 text-green-100",
     eliminated: "bg-slate-900 border-slate-800 text-slate-600",
+    visited:    "bg-sky-500/15 border-sky-700 text-sky-200",
 };
 const DEFAULT = "bg-slate-800 border-slate-500 text-slate-100";
 

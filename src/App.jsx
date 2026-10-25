@@ -3,6 +3,7 @@ import { modules } from './modules/registry.js'
 import ArrayView from './components/ArrayView.jsx'
 import CodePanel from './components/CodePanel.jsx'
 import VarsPanel from './components/VarsPanel.jsx'
+import HashMapView from './components/HashMapView.jsx'
 
 // Default input for now, will go inside the function once user can change input. 
 
@@ -59,8 +60,17 @@ function App() {
           </header>
 
           {/* Visualization */}
-          <section className="bg-slate-900 border border-slate-800 rounded-xl px-6 pt-10 pb-4 flex justify-center overflow-x-auto">
-            <ArrayView step={step} />
+          <section className="bg-slate-900 border border-slate-800 rounded-xl px-6 pt-10 pb-6 flex flex-col items-center overflow-x-auto">
+            {step.array && <ArrayView step={step} />}
+
+            {step.map && (
+              <HashMapView 
+                map={step.map}
+                highlights={step.mapHighlights}
+                prevMap={stepIndex > 0 ? steps[stepIndex-1].map : null}
+                label={mod.mapLabel}
+              />
+            )}
           </section>
 
           {/* Grid of code/explanation/variables */}
