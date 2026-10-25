@@ -187,8 +187,9 @@ export const maxAvgSubarray = {
     code,
     defaultInput: { arr: [2, 1, 5, 1, 3, 2, 6, 1, 4], k: 3 },
     generateSteps,
-    time: "O(n)",
+    time: "O(N)",
     space: "O(1)",
+    idea: "Every time the window moves, we gain one element and lose another, making calculating the new sum O(1) if we're clever.",
     inputFields: [
         { name: "arr", label: "Array", type: "array" },
         { name: "k", label: "Window size k", type: "number" },

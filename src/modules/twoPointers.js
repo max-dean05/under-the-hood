@@ -85,6 +85,7 @@ export const twoPointers = {
   generateSteps,
   time: "O(N)",
   space: "O(1)",
+  idea: "In a sorted array, if the sum of both ends is too small, the left number can't be part of any answer, so drop it. Too big? Drop the right one. Every step rules out a number.",
   inputFields: [
     { name: "arr", label: "Sorted array", type: "array" },
     { name: "target", label: "Target", type: "number" },

@@ -81,6 +81,7 @@ export const climbingStairs = {
     generateSteps,
     time: "O(N)",
     space: "O(N)",
+    idea: "Your last move onto stair n came from stair n-1 or n-2. So ways(n) = ways(n-1) + ways(n-2). By saving the previous answer, you save a ton of time.",
     inputFields: [
         { name: "n", label: "Stairs n", type: "number" },
     ],

@@ -80,6 +80,7 @@ export const binarySearch = {
     generateSteps,
     time: "O(log(N))",
     space: "O(1)",
+    idea: "Because the array is sorted, one comparison with the middle tells you which half can't contain the target. By discarding half of the elements every time our search can run in O(log(N)).",
     inputFields: [
         { name: "arr", label: "Sorted array", type: "array" },
         { name: "target", label: "Target", type: "number"},

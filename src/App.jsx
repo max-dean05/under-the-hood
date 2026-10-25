@@ -4,7 +4,7 @@ import ArrayView from "./components/ArrayView.jsx";
 import CodePanel from "./components/CodePanel.jsx";
 import VarsPanel from "./components/VarsPanel.jsx";
 import HashMapView from "./components/HashMapView.jsx";
-import InputEditor from './components/InputEditor.jsx';
+import InputEditor from "./components/InputEditor.jsx";
 
 const SPEEDS = [
   { label: "0.5x", ms: 2000 },
@@ -87,6 +87,35 @@ function App() {
     <>
       <div className="min-h-screen bg-slate-950 text-slate-100">
         <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col gap-6">
+          {/* Page Header */}
+          <div className="flex flex-col gap-2 pb-2 border-b border-slate-800">
+            <div className="flex items-center gap-3">
+              <img src="/favicon.svg" alt="" className="w-8 h-8" />
+              <h1 className="text-2xl font-bold tracking-tight">
+                Under the Hood
+              </h1>
+            </div>
+            <p className="text-slate-400 max-w-2xl">
+              You've memorized the LeetCode solution. Now see{" "}
+              <span className="text-slate-100 font-medium">why</span> it works,
+              one step at a time.
+            </p>
+            <p className="text-xs text-slate-500">
+              Press{" "}
+              <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700">
+                ←
+              </kbd>{" "}
+              <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700">
+                →
+              </kbd>{" "}
+              to step,{" "}
+              <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700">
+                Space
+              </kbd>{" "}
+              to play.
+            </p>
+          </div>
+
           {/* Module tabs */}
           <nav className="flex flex-wrap gap-2">
             {modules.map((m) => (
@@ -121,6 +150,16 @@ function App() {
               </span>
             </div>
           </header>
+
+          {/* Problem description */}
+          {mod.idea && (
+            <div className="flex gap-3 items-start bg-sky-500/10 border border-sky-500/30 rounded-xl px-5 py-4">
+              <span className="text-xs font-semibold uppercase tracking-wider text-sky-300 shrink-0 pt-0.5">
+                The idea
+              </span>
+              <p className="text-slate-200 leading-relaxed">{mod.idea}</p>
+            </div>
+          )}
 
           {/* Custom input field */}
           <InputEditor mod={mod} input={input} onApply={applyInput} />

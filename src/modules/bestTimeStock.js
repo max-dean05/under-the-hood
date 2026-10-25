@@ -130,6 +130,7 @@ export const bestTimeStock = {
     generateSteps,
     time: "O(n)",
     space: "O(1)",
+    idea: "To sell on any day, the best buy is the cheapest day before it. Instead of comparing every pair of days, just keep the lowest price so far.",
     inputFields: [
         { name: "arr", label: "Prices", type: "array" },
     ],

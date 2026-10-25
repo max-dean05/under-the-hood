@@ -96,6 +96,7 @@ export const moveZeroes = {
     generateSteps,
     time: "O(N)",
     space: "O(1)",
+    idea: "A write pointer marks where the next non-zero belongs. Each non-zero gets swapped forward to it, so finished numbers pile up on the left and zeros drift to the back, all in place.",
     inputFields: [
         { name: "arr", label: "Array", type: "array"},
     ],

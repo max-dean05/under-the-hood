@@ -79,6 +79,7 @@ export const twoSum = {
     mapLabel: "seen  (value → index)",
     time: "O(N)",
     space: "O(N)",
+    idea: "Instead of checking every pair, remember each number you've seen in a hash map. Then, 'does my partner exist?' becomes an instant lookup.",
     inputFields: [
         { name: "arr", label: "Array", type: "array" },
         { name: "target", label: "Target", type: "number" },
