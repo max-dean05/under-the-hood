@@ -177,7 +177,7 @@ function App() {
               <InputEditor mod={mod} input={input} onApply={applyInput} />
 
               {/* Visualization */}
-              <section className="bg-slate-900 border border-slate-800 rounded-xl px-6 pt-10 pb-6 flex flex-col items-center overflow-x-auto">
+              <section className="bg-slate-900 border border-slate-800 rounded-xl px-6 pt-10 pb-2 flex flex-col items-center overflow-x-auto">
                 {step.array && <ArrayView step={step} />}
                 {step.map && (
                   <HashMapView
@@ -190,17 +190,17 @@ function App() {
               </section>
 
               {/* Grid of code/explanation/variables */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] gap-6">
                 {/* Left side: Code panel */}
                 <CodePanel code={mod.code} activeLines={step.lines} />
 
                 {/* Right side: Explanation on top, variables below it */}
                 <div className="flex flex-col gap-6">
-                  <div className="bg-slate-900 border border-slate-800 rounded-lg p-5 min-h-70">
+                  <div className="bg-slate-900 border border-slate-800 rounded-lg p-5 min-h-78">
                     <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
                       What's happening
                     </h2>
-                    <p className="text-lg leading-relaxed">{step.explain}</p>
+                    <p key={`${moduleId}-${stepIndex}`} className="fade-in text-lg leading-relaxed">{step.explain}</p>
                   </div>
 
                   <VarsPanel
