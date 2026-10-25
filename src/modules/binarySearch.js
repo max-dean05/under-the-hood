@@ -6,7 +6,7 @@ const code = [
     "    low = 0",                      // 1
     "    high = len(arr) - 1",          // 2
     "    while low <= high:",           // 3
-    "        mid = (low + high)",       // 4
+    "        mid = (low + high) // 2",  // 4
     "        if arr[mid] == target:",   // 5
     "            return mid",           // 6
     "        elif arr[mid] < target:",  // 7

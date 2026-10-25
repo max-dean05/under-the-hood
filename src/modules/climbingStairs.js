@@ -67,8 +67,8 @@ function generateSteps({ n }) {
     }
 
     i = n;
-    snap(5, `There are ${dp[n]} ways to get to stair ${n}. Each stair is only solved once due to memoizing our answers. If we used regular recursion, it would take ${naiveCalls(n)} calls!`, { current: i, found: true });
-    snap(5, `Note: This looks awful similar to another problem that is just presented differently: finding the numbers of the fibonacci sequence!`);
+    snap(5, `There are ${dp[n]} ways to get to stair ${n}. Each stair is only solved once due to memoizing our answers. If we used regular recursion, it would take ${naiveCalls(n)} calls!`, { current: n, found: true });
+    snap(5, `Note: This looks awful similar to another problem that is just presented differently: finding the numbers of the fibonacci sequence!`, { current: n, found: true });
     return rec.steps;
 }
 
