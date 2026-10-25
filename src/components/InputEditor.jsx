@@ -20,6 +20,12 @@ export default function InputEditor({ mod, input, onApply }) {
         onApply(parsed.value);
     }
 
+    function loadInput(newInput) {
+        setTexts(toTexts(mod.inputFields, newInput));
+        setError(null);
+        onApply(newInput);
+    }
+
     return (
         <form
             onSubmit={(e) => { e.preventDefault(); apply(); }}  // enter key applies
@@ -42,11 +48,11 @@ export default function InputEditor({ mod, input, onApply }) {
                     <button type="submit" className="px-4 py-2 rounded-md bg-sky-600 hover:bg-sky-500 text-sm font-semibold">
                         Run
                     </button>
-                    <button type="button" onClick={() => onApply(mod.randomInput())}
+                    <button type="button" onClick={() => loadInput(mod.randomInput())}
                         className="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-sm">
                         Random
                     </button>
-                    <button type="button" onClick={() => onApply(mod.defaultInput)}
+                    <button type="button" onClick={() => loadInput(mod.defaultInput)}
                         className="px-3 py-2 rounded-md bg-slate-800 hover:bg-slate-700 text-sm text-slate-300">
                         Default
                     </button>
