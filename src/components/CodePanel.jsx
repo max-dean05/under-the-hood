@@ -7,11 +7,11 @@ export default function CodePanel({ code, activeLines }) {
                 return (
                     <div
                         key={i}
-                        className={`flex gap-4 px-2 rounded transition-colors duration-200 ${
+                        className={`flex min-w-max gap-4 px-2 rounded transition-colors duration-200 ${
                             isActive ? "bg-yellow-400/20" : ""}`}
                     >
                         {/* Line number */}
-                        <span className={`w-6 text-right select-none ${isActive ? "text-yellow-300" : "text-slate-500"}`}>
+                        <span className={`w-6 shrink-0 text-right select-none ${isActive ? "text-yellow-300" : "text-slate-500"}`}>
                             {i + 1}
                         </span>
 
