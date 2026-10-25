@@ -1,4 +1,5 @@
 import { createRecorder } from "../engine/createRecorder.js";
+import { checkArray, randInt, randomSorted } from "../engine/inputs.js";
 
 const code = [
   "def two_sum_sorted(arr, target):", // 0
@@ -84,4 +85,15 @@ export const twoPointers = {
   generateSteps,
   time: "O(N)",
   space: "O(1)",
+  inputFields: [
+    { name: "arr", label: "Sorted array", type: "array" },
+    { name: "target", label: "Target", type: "number" },
+  ],
+  validateInput: ({ arr }) => checkArray(arr, { minLen: 2, sorted: true }),
+  randomInput: () => {
+    const arr = randomSorted(randInt(7, 9), 1, 30);
+    const i = randInt(0, arr.length - 2);
+    const j = randInt(i + 1, arr.length - 1);
+    return { arr, target: arr[i] + arr[j] };
+  },
 };

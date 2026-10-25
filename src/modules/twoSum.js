@@ -1,4 +1,5 @@
 import { createRecorder } from '../engine/createRecorder.js';
+import { checkArray, randInt, randomSorted } from "../engine/inputs.js";
 
 const code = [
     "def two_sum(arr, target):",          // 0
@@ -78,4 +79,16 @@ export const twoSum = {
     mapLabel: "seen  (value → index)",
     time: "O(N)",
     space: "O(N)",
+    inputFields: [
+        { name: "arr", label: "Array", type: "array" },
+        { name: "target", label: "Target", type: "number" },
+    ],
+    validateInput: ({ arr }) => checkArray(arr, { minLen: 2, maxLen: 10 }),
+    randomInput: () => {
+        const arr = Array.from({ length: randInt(6, 8) }, () => randInt(1, 20));
+        // Put the answer's second number near the end so the map fills up first
+        const j = randInt(arr.length - 3, arr.length - 1);
+        const i = randInt(0, j - 1);
+        return { arr, target: arr[i] + arr[j] };
+    },
 }

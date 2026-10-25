@@ -1,4 +1,5 @@
 import { createRecorder } from "../engine/createRecorder.js";
+import { checkArray, randInt, randomSorted } from "../engine/inputs.js";
 
 const code = [
     "def binary_search(arr, target):",  // 0
@@ -66,7 +67,7 @@ function generateSteps({ arr, target }) {
         }
 
     }
-    snap(11, 'The target is not in the array.');
+    snap(11, 'The target is not in the array, return -1.');
     return rec.steps;
 }
 
@@ -79,4 +80,15 @@ export const binarySearch = {
     generateSteps,
     time: "O(log(N))",
     space: "O(1)",
+    inputFields: [
+        { name: "arr", label: "Sorted array", type: "array" },
+        { name: "target", label: "Target", type: "number"},
+    ],
+    validateInput: ({ arr }) => checkArray(arr, { sorted: true }),
+    randomInput: () => {
+        const arr = randomSorted(randInt(7, 11), 1, 40);
+        // pick a non-existent target 25% of the time
+        const target = Math.random() < 0.75 ? arr[randInt(0, arr.length - 1)] : randInt(1, 40);
+        return { arr, target };
+    },
 };

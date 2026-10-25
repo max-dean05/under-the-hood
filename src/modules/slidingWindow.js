@@ -1,4 +1,5 @@
 import { createRecorder } from "../engine/createRecorder.js";
+import { checkArray, randInt, randomSorted } from "../engine/inputs.js";
 
 const code = [
     "def find_max_average(arr, k):",          // 0
@@ -188,4 +189,15 @@ export const slidingWindow = {
     generateSteps,
     time: "O(n)",
     space: "O(1)",
+    inputFields: [
+        { name: "arr", label: "Array", type: "array" },
+        { name: "k", label: "Window size k", type: "number" },
+    ],
+    validateInput: ({ arr, k }) =>
+        checkArray(arr) ??
+        (k < 1 || k > arr.length ? `k must be between 1 and ${arr.length} (the array length).` : null),
+    randomInput: () => {
+        const arr = Array.from({ length: randInt(8, 10) }, () => randInt(-3, 12));
+        return { arr, k: randInt(2, 4) };
+    },
 };

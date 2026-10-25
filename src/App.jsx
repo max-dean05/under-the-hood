@@ -4,6 +4,7 @@ import ArrayView from "./components/ArrayView.jsx";
 import CodePanel from "./components/CodePanel.jsx";
 import VarsPanel from "./components/VarsPanel.jsx";
 import HashMapView from "./components/HashMapView.jsx";
+import InputEditor from './components/InputEditor.jsx';
 
 const SPEEDS = [
   { label: "0.5x", ms: 2000 },
@@ -17,10 +18,12 @@ function App() {
   const [stepIndex, setStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [speed, setSpeed] = useState(1200);
+  const [customInput, setCustomInput] = useState(null);
 
   const mod = modules.find((m) => m.id === moduleId);
 
-  const steps = useMemo(() => mod.generateSteps(mod.defaultInput), [mod]);
+  const input = customInput ?? mod.defaultInput;
+  const steps = useMemo(() => mod.generateSteps(input), [mod, input]);
   const step = steps[stepIndex];
 
   const isFirstStep = stepIndex === 0;
@@ -61,6 +64,7 @@ function App() {
     setIsPlaying(false);
     setModuleId(id);
     setStepIndex(0);
+    setCustomInput(null);
   }
 
   function togglePlay() {
@@ -71,6 +75,12 @@ function App() {
   function goTo(index) {
     setIsPlaying(false);
     setStepIndex(index);
+  }
+
+  function applyInput(newInput) {
+    setIsPlaying(false);
+    setCustomInput(newInput);
+    setStepIndex(0);
   }
 
   return (
@@ -111,6 +121,9 @@ function App() {
               </span>
             </div>
           </header>
+
+          {/* Custom input field */}
+          <InputEditor mod={mod} input={input} onApply={applyInput} />
 
           {/* Visualization */}
           <section className="bg-slate-900 border border-slate-800 rounded-xl px-6 pt-10 pb-6 flex flex-col items-center overflow-x-auto">
